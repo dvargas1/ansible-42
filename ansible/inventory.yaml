@@ -1,0 +1,4 @@
+myhosts:
+  hosts:
+    oracle:
+      ansible_host: 144.22.133.92
