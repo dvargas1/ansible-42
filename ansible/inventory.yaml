@@ -1,4 +1,6 @@
-myhosts:
+inception_hosts:
   hosts:
-    oracle:
-      ansible_host: 144.22.133.92
+    first_vm:
+      ansible_host: 163.176.181.75
+    second_vm:
+      ansible_host: 64.181.170.169
