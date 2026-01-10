@@ -2,5 +2,7 @@ inception_hosts:
   hosts:
     first_vm:
       ansible_host: 163.176.181.75
+      ansible_user: ubuntu
     second_vm:
       ansible_host: 64.181.170.169
+      ansible_user: ubuntu
