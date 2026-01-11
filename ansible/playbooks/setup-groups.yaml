@@ -1,0 +1,10 @@
+- name: Add user to the docker group
+  hosts: inception_hosts
+  become: true
+
+  tasks:
+  - name: Add ubuntu user to docker group
+    ansible.builtin.user:
+      append: true
+      name: ubuntu
+      group: docker
