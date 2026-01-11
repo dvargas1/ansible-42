@@ -1,4 +1,4 @@
-- name: Install Docker
+- name: Setup VM
   hosts: inception_hosts
   become: true
 
