@@ -1,8 +1,9 @@
-- name: Run docker compose up inside the VMs
+- name: Run docker compose down inside the VMs
   hosts: inception_hosts
 
   tasks:
-    - name: Bringing up the docker environment
+    - name: Destroying the docker environment
       community.docker.docker_compose_v2:
         project_src: ~/inception
+        state: absent
         wait: true
