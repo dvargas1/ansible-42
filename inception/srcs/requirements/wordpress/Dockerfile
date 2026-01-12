@@ -10,4 +10,5 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 COPY ./tools/setup.sh /
 COPY ./conf/www.conf /etc/php7/php-fpm.d/
 
+RUN chmod +x /setup.sh
 ENTRYPOINT ["/setup.sh"]

@@ -7,4 +7,5 @@ RUN mkdir -p /etc/nginx
 COPY ./conf/nginx.conf /etc/nginx/
 COPY ./tools/setup.sh  /
 
+RUN chmod +x /setup.sh
 ENTRYPOINT ["/setup.sh"]

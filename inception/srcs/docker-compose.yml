@@ -1,6 +1,6 @@
 services:
   mariadb:
-    image: mariadb
+    image: my-mariadb
     build: ./requirements/mariadb
     env_file: .env
     volumes:
@@ -9,7 +9,7 @@ services:
       - inception-network
     restart: always
   wordpress:
-    image: wordpress
+    image: my-wordpress
     build: ./requirements/wordpress
     env_file: .env
     volumes:
@@ -18,7 +18,7 @@ services:
       - inception-network
     restart: always
   nginx:
-    image: nginx
+    image: my-nginx
     build: ./requirements/nginx
     env_file: .env
     volumes:

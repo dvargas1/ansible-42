@@ -3,7 +3,15 @@
 if [ ! -d "/database/$DB_NAME" ]
 then
 	mysqld_safe --datadir=/database & #start server
-	sleep 1 #wait until server is up and running
+	i=30
+	while [ $i -gt 0 ]; do
+	    if mysqladmin ping >/dev/null 2>&1; then
+	        break
+	    fi
+	    echo "Waiting for MariaDB... ($i)"
+	    sleep 1
+	    i=$((i-1))
+	done
 
 #secure installaiton
 mariadb-secure-installation << END

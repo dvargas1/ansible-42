@@ -7,4 +7,5 @@ RUN mariadb-install-db --user=mysql --basedir=/usr --datadir=/database
 COPY ./tools/setup.sh /
 COPY ./conf/mariadb-server.cnf /etc/my.cnf.d/
 
+RUN chmod +x /setup.sh
 ENTRYPOINT ["/setup.sh"]
