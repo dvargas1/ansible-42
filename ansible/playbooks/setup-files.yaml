@@ -1,0 +1,35 @@
+- name: Copy and generate files
+  hosts: inception_hosts
+
+  tasks:
+    - name: Copy config files to remote servers
+      ansible.builtin.copy:
+        src: ../../inception/srcs/
+        dest: ~/inception
+        mode: '0644'
+
+    - name: Generate dynamic Nginx configuration
+      ansible.builtin.template:
+        src: "../../inception/srcs/requirements/nginx/conf/nginx.conf.j2"
+        dest: "~/inception/requirements/nginx/conf/nginx.conf"
+        mode: '0644'
+
+    - name: Generate Private Key
+      community.crypto.openssl_privatekey:
+        path: "~/inception/requirements/nginx/conf/nginx.key"
+        size: 2048
+        mode: '0600'
+    
+    - name: Generate Certificate Signing Request (CSR)
+      community.crypto.openssl_csr:
+        path: "~/inception/requirements/nginx/conf/nginx.csr"
+        privatekey_path: "~/inception/requirements/nginx/conf/nginx.key"
+        common_name: "{{ domain }}"
+    
+    - name: Generate Self-Signed Certificate
+      community.crypto.x509_certificate:
+        path: "~/inception/requirements/nginx/conf/nginx.crt"
+        privatekey_path: "~/inception/requirements/nginx/conf/nginx.key"
+        csr_path: "~/inception/requirements/nginx/conf/nginx.csr"
+        provider: selfsigned
+        selfsigned_not_after: "+365d"

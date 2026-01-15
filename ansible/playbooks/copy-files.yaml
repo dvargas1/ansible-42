@@ -1,9 +1,0 @@
-- name: Copy file with owner and permissions
-  hosts: inception_hosts
-
-  tasks:
-    - name: Copy config files to remote servers
-      ansible.builtin.copy:
-        src: ../../inception/srcs/
-        dest: ~/inception
-        mode: '0644'
