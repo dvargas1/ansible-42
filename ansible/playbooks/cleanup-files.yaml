@@ -1,0 +1,8 @@
+- name: Cleanup project files and SSL certificates
+  hosts: inception_hosts
+
+  tasks:
+    - name: Remove the inception directory and all its contents
+      ansible.builtin.file:
+        path: ~/inception
+        state: absent

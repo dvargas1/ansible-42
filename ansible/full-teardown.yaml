@@ -1,0 +1,4 @@
+- import_playbook: playbooks/hard-compose-down.yaml
+- import_playbook: playbooks/cleanup-files.yaml
+- import_playbook: playbooks/remove-groups.yaml
+- import_playbook: playbooks/uninstall-docker.yaml

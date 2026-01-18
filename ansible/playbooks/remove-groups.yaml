@@ -1,0 +1,12 @@
+- name: Remove user from the docker group
+  hosts: inception_hosts
+  become: true
+
+  tasks:
+    - name: Remove ubuntu user from docker group
+      ansible.builtin.command: gpasswd -d ubuntu docker
+      register: result
+      failed_when: 
+        - result.rc != 0 
+        - "'is not a member of' not in result.stderr"
+      changed_when: result.rc == 0

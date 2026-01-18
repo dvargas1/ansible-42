@@ -1,0 +1,36 @@
+- name: Uninstall Docker and cleanup system
+  hosts: inception_hosts
+  become: true
+
+  tasks:
+    - name: Stop and disable Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Remove Docker packages
+      ansible.builtin.package:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io 
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: absent
+        purge: yes
+
+    - name: Remove Docker repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
+        state: absent
+        filename: docker
+
+    - name: Remove GPG key and directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/keyrings/docker.asc
+        - /etc/apt/keyrings
