@@ -1,4 +1,12 @@
 - import_playbook: playbooks/install-docker.yaml
 - import_playbook: playbooks/setup-groups.yaml
 - import_playbook: playbooks/setup-files.yaml
+
+- name: Refresh SSH connections to pick up group changes
+  hosts: inception_hosts
+  gather_facts: false
+  tasks:
+    - name: Reset connection
+      ansible.builtin.meta: reset_connection
+
 - import_playbook: playbooks/compose-up.yaml
