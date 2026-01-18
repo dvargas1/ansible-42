@@ -1,4 +1,4 @@
-- name: Add user to the docker group
+- name: Setup user groups
   hosts: inception_hosts
   become: true
 

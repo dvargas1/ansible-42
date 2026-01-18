@@ -1,0 +1,4 @@
+- import_playbook: playbooks/install-docker.yaml
+- import_playbook: playbooks/setup-groups.yaml
+- import_playbook: playbooks/setup-files.yaml
+- import_playbook: playbooks/compose-up.yaml
