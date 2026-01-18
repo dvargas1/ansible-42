@@ -7,4 +7,4 @@
     ansible.builtin.user:
       append: true
       name: ubuntu
-      group: docker
+      groups: docker
