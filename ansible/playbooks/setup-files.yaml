@@ -14,6 +14,12 @@
         dest: "~/inception/requirements/nginx/conf/nginx.conf"
         mode: '0644'
 
+    - name: Generate dynamic wordpress script
+      ansible.builtin.template:
+        src: "../../inception/srcs/requirements/wordpress/tools/setup.sh.j2"
+        dest: "~/inception/requirements/wordpress/tools/setup.sh"
+        mode: '0644'
+
     - name: Generate Private Key
       community.crypto.openssl_privatekey:
         path: "~/inception/requirements/nginx/conf/nginx.key"
