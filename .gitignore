@@ -1,1 +1,10 @@
 .env
+
+en.subject.pdf
+
+# Generated files (local testing)
+inception/srcs/requirements/nginx/conf/nginx.conf
+inception/srcs/requirements/nginx/conf/nginx.key
+inception/srcs/requirements/nginx/conf/nginx.crt
+inception/srcs/requirements/nginx/conf/nginx.csr
+inception/srcs/requirements/wordpress/tools/setup.sh

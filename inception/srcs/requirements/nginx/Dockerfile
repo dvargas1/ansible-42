@@ -1,11 +1,9 @@
-FROM alpine:3.14
+FROM alpine:3.19
 
-RUN apk add --no-cache nginx
-RUN apk add --no-cache openssl
+RUN apk add --no-cache nginx openssl
 
 RUN mkdir -p /etc/nginx
 COPY ./conf/nginx.conf /etc/nginx/
-COPY ./tools/setup.sh  /
 
 RUN mkdir -p /etc/ssl/private
 COPY ./conf/nginx.crt /etc/ssl/certs/certificate.crt
