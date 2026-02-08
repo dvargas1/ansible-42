@@ -28,22 +28,41 @@
         dest: "~/inception/requirements/wordpress/tools/setup.sh"
         mode: '0644'
 
-    - name: Generate Private Key
-      community.crypto.openssl_privatekey:
-        path: "~/inception/requirements/nginx/conf/nginx.key"
-        size: 2048
+    - name: Install certbot
+      become: true
+      ansible.builtin.package:
+        name: certbot
+        state: present
+        update_cache: yes
+
+    - name: Obtain Let's Encrypt certificate
+      become: true
+      ansible.builtin.command:
+        cmd: >
+          certbot certonly --standalone
+          -d {{ domain }}
+          --non-interactive
+          --agree-tos
+          --register-unsafely-without-email
+          --keep-until-expiring
+      register: certbot_result
+      changed_when: "'Certificate not yet due for renewal' not in certbot_result.stdout"
+
+    - name: Make Let's Encrypt certs readable
+      become: true
+      ansible.builtin.command:
+        cmd: chmod -R a+rX /etc/letsencrypt/live /etc/letsencrypt/archive
+
+    - name: Copy Let's Encrypt certificate
+      ansible.builtin.copy:
+        src: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+        dest: "~/inception/requirements/nginx/conf/nginx.crt"
+        remote_src: true
+        mode: '0644'
+
+    - name: Copy Let's Encrypt private key
+      ansible.builtin.copy:
+        src: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
+        dest: "~/inception/requirements/nginx/conf/nginx.key"
+        remote_src: true
         mode: '0600'
-    
-    - name: Generate Certificate Signing Request (CSR)
-      community.crypto.openssl_csr:
-        path: "~/inception/requirements/nginx/conf/nginx.csr"
-        privatekey_path: "~/inception/requirements/nginx/conf/nginx.key"
-        common_name: "{{ domain }}"
-    
-    - name: Generate Self-Signed Certificate
-      community.crypto.x509_certificate:
-        path: "~/inception/requirements/nginx/conf/nginx.crt"
-        privatekey_path: "~/inception/requirements/nginx/conf/nginx.key"
-        csr_path: "~/inception/requirements/nginx/conf/nginx.csr"
-        provider: selfsigned
-        selfsigned_not_after: "+365d"
