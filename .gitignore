@@ -8,3 +8,11 @@ inception/srcs/requirements/nginx/conf/nginx.key
 inception/srcs/requirements/nginx/conf/nginx.crt
 inception/srcs/requirements/nginx/conf/nginx.csr
 inception/srcs/requirements/wordpress/tools/setup.sh
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/terraform.tfvars
+terraform/*.tfplan
