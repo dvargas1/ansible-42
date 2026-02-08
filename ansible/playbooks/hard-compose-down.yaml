@@ -8,4 +8,3 @@
         state: absent
         remove_images: all    
         remove_volumes: true
-        wait: true
