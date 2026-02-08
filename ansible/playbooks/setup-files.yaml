@@ -8,6 +8,14 @@
         dest: ~/inception
         mode: '0644'
 
+    - name: Create .env from example.env
+      ansible.builtin.copy:
+        src: "~/inception/example.env"
+        dest: "~/inception/.env"
+        remote_src: true
+        force: false
+        mode: '0644'
+
     - name: Generate dynamic Nginx configuration
       ansible.builtin.template:
         src: "../../inception/srcs/requirements/nginx/conf/nginx.conf.j2"
