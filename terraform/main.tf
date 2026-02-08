@@ -3,12 +3,20 @@ terraform {
     mgc = {
       source = "magalucloud/mgc"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5"
+    }
   }
 }
 
 provider "mgc" {
   region  = var.region
   api_key = var.api_key
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 # SSH Key
@@ -78,7 +86,8 @@ locals {
     interface.id if interface.primary
   ][0]
 
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
+  full_domain = var.subdomain != "" ? "${var.subdomain}.${var.domain}" : var.domain
 }
 
 # Attach Security Group to VM's primary interface
@@ -99,6 +108,17 @@ resource "mgc_network_public_ips_attach" "inception_ip_attach" {
   interface_id = local.primary_interface_id
 }
 
+# Cloudflare DNS - Create A record pointing domain to VM public IP
+resource "cloudflare_dns_record" "inception_dns" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.subdomain
+  type    = "A"
+  content = mgc_network_public_ips.inception_public_ip.public_ip
+  ttl     = 300
+  proxied = false
+  comment = "Inception WordPress - managed by Terraform"
+}
+
 # Generate Ansible inventory
 resource "local_file" "ansible_inventory" {
   filename = "${path.module}/../ansible/inventory.yaml"
@@ -109,7 +129,7 @@ resource "local_file" "ansible_inventory" {
           ansible_host: ${mgc_network_public_ips.inception_public_ip.public_ip}
           ansible_user: ubuntu
           ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-          domain: ${mgc_network_public_ips.inception_public_ip.public_ip}
+          domain: ${local.full_domain}
   EOF
 }
 
@@ -126,5 +146,5 @@ output "ssh_command" {
 
 output "wordpress_url" {
   description = "URL to access WordPress"
-  value       = "https://${mgc_network_public_ips.inception_public_ip.public_ip}"
+  value       = "https://${local.full_domain}"
 }

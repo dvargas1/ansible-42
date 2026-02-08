@@ -25,3 +25,25 @@ variable "vpc_id" {
   type        = string
   description = "ID of the default VPC (get from MagaluCloud console: Network > VPCs)"
 }
+
+variable "domain" {
+  type        = string
+  description = "Root domain on Cloudflare (e.g. tupinymquim.com)"
+}
+
+variable "subdomain" {
+  type        = string
+  default     = "cloud"
+  description = "Subdomain for WordPress (e.g. 'cloud' creates cloud.tupinymquim.com)"
+}
+
+variable "cloudflare_api_token" {
+  type        = string
+  sensitive   = true
+  description = "Cloudflare API token with DNS edit permissions"
+}
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare Zone ID (found on domain overview page)"
+}
