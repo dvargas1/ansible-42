@@ -1,0 +1,13 @@
+# Magalu Cloud API Key (get from: https://console.magalu.cloud/)
+api_key = "your-api-key-here"
+
+# Region: br-se1 (Southeast) or br-ne1 (Northeast)
+region = "br-se1"
+
+# Machine type
+# BV1-1-40 = 1 vCPU, 1GB RAM, 40GB disk
+# BV2-2-40 = 2 vCPU, 2GB RAM, 40GB disk (recommended)
+machine_type = "BV2-2-40"
+
+# Name of the SSH key already registered in MagaluCloud
+ssh_key_name = "inception-key"
