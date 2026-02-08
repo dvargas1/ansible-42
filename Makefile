@@ -2,6 +2,7 @@ DOMAIN       ?= localhost
 SRCS_DIR     := inception/srcs
 CERT_DIR     := $(SRCS_DIR)/requirements/nginx/conf
 ANSIBLE_DIR  := ansible
+TF_DIR       := terraform
 
 NGINX_CONF   := $(CERT_DIR)/nginx.conf
 WP_SETUP     := $(SRCS_DIR)/requirements/wordpress/tools/setup.sh
@@ -24,13 +25,47 @@ clean: down
 	cd $(SRCS_DIR) && docker compose down -v --rmi local
 	rm -f $(NGINX_CONF) $(WP_SETUP) $(SSL_KEY) $(SSL_CRT) $(CERT_DIR)/nginx.csr $(ENV_FILE)
 
-# ──────────────── Deploy (Ansible) ────────────────
+# ──────────────── Deploy (Ansible only) ────────────────
 
 deploy:
 	cd $(ANSIBLE_DIR) && ansible-playbook -i inventory.yaml full-setup.yaml
 
 teardown:
 	cd $(ANSIBLE_DIR) && ansible-playbook -i inventory.yaml full-teardown.yaml
+
+# ──────────────── Cloud Deploy (Terraform + Ansible) ────────────────
+
+tf-init:
+	cd $(TF_DIR) && terraform init
+
+tf-plan:
+	cd $(TF_DIR) && terraform plan
+
+tf-apply:
+	cd $(TF_DIR) && terraform apply
+
+tf-destroy:
+	cd $(TF_DIR) && terraform destroy
+
+tf-output:
+	@cd $(TF_DIR) && terraform output
+
+# Full cloud deployment: create VM + deploy stack
+cloud-deploy: tf-init
+	cd $(TF_DIR) && terraform apply -auto-approve
+	@echo ""
+	@echo "Waiting 120s for VM to be ready..."
+	@sleep 120
+	cd $(ANSIBLE_DIR) && ansible-playbook -i inventory.yaml full-setup.yaml
+	@echo ""
+	@echo "========================================"
+	@echo "Deployment complete!"
+	@cd $(TF_DIR) && terraform output
+
+# Full cloud teardown: remove stack + destroy VM
+cloud-destroy:
+	-cd $(ANSIBLE_DIR) && ansible-playbook -i inventory.yaml full-teardown.yaml
+	cd $(TF_DIR) && terraform destroy -auto-approve
 
 # ──────────────── Generated files ────────────────
 
@@ -50,4 +85,6 @@ $(SSL_KEY):
 		-out $(SSL_CRT) \
 		-subj "/CN=$(DOMAIN)" 2>/dev/null
 
-.PHONY: up up-d down clean deploy teardown
+.PHONY: up up-d down clean deploy teardown \
+        tf-init tf-plan tf-apply tf-destroy tf-output \
+        cloud-deploy cloud-destroy
