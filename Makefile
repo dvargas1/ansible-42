@@ -46,13 +46,16 @@ tf-apply:
 
 tf-destroy:
 	cd $(TF_DIR) && terraform destroy
+	rm -f $(ANSIBLE_DIR)/inventory.yaml
 
-tf-output:
-	@cd $(TF_DIR) && terraform output
+inventory:
+	cd $(TF_DIR) && terraform output -raw ansible_inventory > ../$(ANSIBLE_DIR)/inventory.yaml
+
 
 # Full cloud deployment: create VM + deploy stack
 cloud-deploy: tf-init
 	cd $(TF_DIR) && terraform apply -auto-approve
+	$(MAKE) inventory
 	@echo ""
 	@echo "Waiting 120s for VM to be ready..."
 	@sleep 120
@@ -66,6 +69,7 @@ cloud-deploy: tf-init
 cloud-destroy:
 	-cd $(ANSIBLE_DIR) && ansible-playbook -i inventory.yaml full-teardown.yaml
 	cd $(TF_DIR) && terraform destroy -auto-approve
+	rm -f $(ANSIBLE_DIR)/inventory.yaml
 
 # ──────────────── Generated files ────────────────
 
@@ -86,5 +90,5 @@ $(SSL_KEY):
 		-subj "/CN=$(DOMAIN)" 2>/dev/null
 
 .PHONY: up up-d down clean deploy teardown \
-        tf-init tf-plan tf-apply tf-destroy tf-output \
+        tf-init tf-plan tf-apply tf-destroy tf-output inventory \
         cloud-deploy cloud-destroy
