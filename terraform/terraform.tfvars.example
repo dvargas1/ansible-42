@@ -10,4 +10,4 @@ region = "br-se1"
 machine_type = "BV2-2-40"
 
 # Name of the SSH key already registered in MagaluCloud
-ssh_key_name = "inception-key"
+ssh_public_key = "inception-key"
